@@ -354,7 +354,6 @@ struct GridLine* rand_gridline(struct Screen* s) {
 
 int main() 
 {
-    char a[] ="─"; 
     srand(time(NULL));
     struct Screen* s;
     screen_init(&s, 64, 32);
