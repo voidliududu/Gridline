@@ -4,6 +4,7 @@
 #include<time.h>
 #include<unistd.h>
 #include<assert.h>
+#include<getopt.h>
 
 #define LH "─"
 #define LV "│"
@@ -23,6 +24,13 @@ struct Screen{
     int height;
     struct Pixel screen[];
 };
+
+struct Configuration {
+    uint32_t grid_line_num;
+    uint32_t color;
+};
+
+struct Configuration global_control;
 
 void screen_init(struct Screen** s, int weight, int height);
 struct Pixel* screen_get_pixel(struct Screen* s, int x, int y);
@@ -351,21 +359,48 @@ struct GridLine* rand_gridline(struct Screen* s) {
     Position p = rand_position(s->height, s->weight);
     return gridline_new(p.x, p.y, dir->x, dir->y, rand()%255);
 }
+void set_default_param() 
+{
+    global_control.grid_line_num = 8;
+    global_control.color = 1;
+}
 
-int main() 
+int ParseParam(int argc, char* argv[])
+{
+    int ch;
+    while((ch =getopt(argc, argv, "n:c::")) != -1) {
+        switch (ch ) {
+            case 'n':
+                sscanf(optarg,"%u", &global_control.grid_line_num);
+                break;
+            case 'c':
+                global_control.color = 1;
+                break;
+            case '?':
+                exit(0);
+            default:
+                break;
+        }
+    }
+    return 0;
+}
+
+int main(int argc, char* argv[]) 
 {
     srand(time(NULL));
     struct Screen* s;
+    set_default_param();
+    ParseParam(argc, argv);
     screen_init(&s, 64, 32);
     draw_box(s);
-    struct GridLine* g[16];
-    for (int i = 0; i < 16; i ++) {
+    struct GridLine* g[256];
+    for (int i = 0; i < global_control.grid_line_num; i ++) {
         //g[i] = gridline_new(rand()%31,rand()%63,rand()/2?1:-1,0, rand()%255);
         g[i] = rand_gridline(s);
     }
     for(int k = 0; k < 50; k ++) {
         //print_grid_info(s,g);
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < global_control.grid_line_num; i++) {
             gridline_step(s,g[i]);
         }
         //sleep(1);
