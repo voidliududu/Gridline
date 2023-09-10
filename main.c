@@ -126,7 +126,7 @@ void print_screen(struct Screen* s)
             struct Pixel* p = screen_get_pixel(s,i,j);
             //printf("\033[44;37;5m");
             //printf("\033[44;%d;5m",p->color);
-            printf("\033[38;5;%d;5m",p->color);
+            printf("\033[38;5;%dm",p->color);
             printf("%s", p->content);
             printf("\033[0m");
         }
