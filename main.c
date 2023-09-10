@@ -348,9 +348,12 @@ Position* rand_direction()
 Position rand_position(int x, int y) 
 {
     Position p;
-    int r = rand();
-    p.x = rand() % x;
-    p.y = rand() % y;
+    do {
+        p.x = rand() %(x-1);
+    } while (p.x == 0);
+    do {
+        p.y = rand() %(y-1);
+    } while (p.y == 0);
     return p;
 }
 
@@ -399,11 +402,10 @@ int main(int argc, char* argv[])
         g[i] = rand_gridline(s);
     }
     for(int k = 0; k < 50; k ++) {
-        //print_grid_info(s,g);
         for (int i = 0; i < global_control.grid_line_num; i++) {
+            // print_grid_info(s,g[i]);
             gridline_step(s,g[i]);
         }
-        //sleep(1);
         //printf("\033[0;0H"); // 光标移动到左上角
     }
     printf("\033[2J"); // 清屏
