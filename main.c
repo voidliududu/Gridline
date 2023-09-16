@@ -119,6 +119,11 @@ void screen_init(struct Screen** s, int weight, int height) {
     }
 }
 
+void screen_destory(struct Screen* s) 
+{
+    free(s);
+}
+
 void print_screen(struct Screen* s) 
 {
     for (int i = 0; i < s->height; i++) {
@@ -178,6 +183,11 @@ struct GridLine* gridline_new(int x, int y, int dx, int dy, uint8_t color)
     g->direction.y = dy;
     g->color = color;
     return g;
+}
+
+void gridline_destroy(struct GridLine* g)
+{
+    free(g);
 }
 
 int gridline_move(struct GridLine* g) 
@@ -410,4 +420,8 @@ int main(int argc, char* argv[])
     }
     printf("\033[2J"); // 清屏
     print_screen(s);
+    for (int i = 0; i < global_control.grid_line_num; i ++) {
+        gridline_destroy(g[i]);
+    }
+    screen_destory(s);
 }
